@@ -1,22 +1,24 @@
 <template>
-  <div>
-    <div class="logo">
-      <p>News Summary</p>
-    </div>
-    <div class="search">
-      <input type="text" />
-    </div>
-    <div class="dark-mode">다크모드</div>
-  </div>
+  <v-app-bar title="News summary">
+    <v-card-text>
+      <v-text-field
+        density="compact"
+        variant="solo"
+        label="Search keyword"
+        append-inner-icon="mdi:mdi-magnify"
+        single-line
+        hide-details></v-text-field>
+      <!-- @click:append-inner="onClick" -->
+    </v-card-text>
+    <v-spacer></v-spacer>
+  </v-app-bar>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  setup() {
-    return {};
-  },
+  name: "HeaderView",
 });
 </script>
 
