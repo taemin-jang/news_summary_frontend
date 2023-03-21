@@ -11,6 +11,7 @@
       <!-- @click:append-inner="onClick" -->
     </v-card-text>
     <v-spacer></v-spacer>
+    <v-btn icon="light_mode"></v-btn>
   </v-app-bar>
 </template>
 
