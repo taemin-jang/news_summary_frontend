@@ -1,17 +1,18 @@
 <!-- @format -->
 
 <template>
-  <v-card color="innerBg" width="70%">
+  <v-card color="innerBg" :elevation="4" width="70%">
     <v-card-title>경제</v-card-title>
     <v-row no-gutters>
       <v-col>
         <v-sheet :elevation="2" color="newsBg" class="pa-2 ma-2 rounded-t-xl">
           <v-img
-            class="bg-white rounded-xl"
+            class="bg-white rounded-xl elevation-4"
             width="100%"
+            :elevation="2"
             src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
             cover></v-img>
-          <div class="text-subtitle-1 font-weight-bold">경제 제목</div>
+          <div class="text-subtitle-1 font-weight-bold mt-1">경제 제목</div>
           <p class="text-start">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
@@ -42,11 +43,11 @@
       <v-col>
         <v-sheet :elevation="2" color="newsBg" class="pa-2 ma-2 rounded-t-xl">
           <v-img
-            class="bg-white rounded-xl"
+            class="bg-white rounded-xl elevation-4"
             width="100%"
             src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
             cover></v-img>
-          <div class="text-subtitle-1 font-weight-bold">경제 제목</div>
+          <div class="text-subtitle-1 font-weight-bold mt-1">경제 제목</div>
           <p class="text-start">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
