@@ -19,6 +19,15 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"),
     },
   },
+  // cors 설정
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+      },
+    },
+  },
   /* remove the need to specify .vue files https://vitejs.dev/config/#resolve-extensions
   resolve: {
     extensions: [
