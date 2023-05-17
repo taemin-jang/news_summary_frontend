@@ -1,6 +1,10 @@
 import axios from "@/plugins/http-common";
 import { AxiosResponse } from "axios";
 import { NaverResponse } from "@/types/NaverSearch";
+import { UserProfile } from "@/types/KakaoLogin";
+import { useUserStore } from "@/store/user";
+
+const store = useUserStore();
 
 class AxiosService {
   getAll(): Promise<any> {
@@ -14,11 +18,28 @@ class AxiosService {
     return response.data;
   }
 
-  async sendAccessTokenToServer(accessToken: string): Promise<any> {
-    const response = await axios.post("/kakao-login", {
-      access_token: accessToken,
-    });
+  async sendAccessTokenToServer(
+    accessToken: string
+  ): Promise<AxiosResponse<UserProfile>> {
+    const response: AxiosResponse<UserProfile> = await axios.post(
+      "/kakao/login",
+      {
+        access_token: accessToken,
+      }
+    );
+    console.log(response);
     return response;
+  }
+
+  async getKakaoProfile(): Promise<void> {
+    await axios
+      .get("/kakao/info")
+      .then((result) => {
+        if (result.status === 200) store.setUser(result.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   create(data: any): Promise<any> {
