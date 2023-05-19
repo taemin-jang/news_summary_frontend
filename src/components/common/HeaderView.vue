@@ -1,5 +1,7 @@
 <template>
-  <v-app-bar title="News summary" color="headerBg">
+  <v-app-bar color="headerBg">
+    <v-btn @click="movePage('/politics')">News summary</v-btn>
+    <v-spacer></v-spacer>
     <v-card-text>
       <v-text-field
         density="compact"
@@ -23,15 +25,23 @@
       <v-btn icon="mdi:mdi-account" @click="login" v-else></v-btn>
     </div>
     <div v-else>
-      <v-btn>
-        <img
-          :src="profile.thumbnail_image"
-          alt="kakao_profile"
-          width="30"
-          height="30"
-          @click="mypage"
-          v-if="profile" />
-      </v-btn>
+      <v-menu open-on-hover>
+        <template v-slot:activator="{ props }">
+          <v-btn v-bind="props">
+            <img
+              :src="profile.thumbnail_image"
+              alt="kakao_profile"
+              width="30"
+              height="30"
+              v-if="profile" />
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item v-for="(item, i) in profileMenu" :key="i">
+            <v-btn @click="movePage(item.url)">{{ item.title }}</v-btn>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </div>
   </v-app-bar>
 </template>
@@ -52,13 +62,18 @@ export default defineComponent({
     const theme = useTheme();
     const router = useRouter();
     let profile: Ref<UserProfile | null> = ref(store.getUser);
-
+    const profileMenu = [
+      { title: "마이페이지", url: "/mypage" },
+      { title: "포트폴리오", url: "/portfolio" },
+      { title: "로그아웃", url: "/logout" },
+    ];
     onMounted(async () => {
       await AxiosService.getKakaoProfile();
     });
     return {
       theme,
       profile,
+      profileMenu,
       toggleTheme: () => {
         theme.global.name.value = theme.global.current.value.dark
           ? "light"
@@ -67,8 +82,16 @@ export default defineComponent({
       login: () => {
         router.push("/login");
       },
-      mypage: () => {
-        router.push("/mypage");
+      movePage: async (url: string) => {
+        if (url === "/logout") {
+          AxiosService.logout();
+          store.deleteUser();
+          console.log("profile", profile);
+          console.log("getUser", store.getUser);
+          router.push("/login");
+          return;
+        }
+        router.push(`${url}`);
       },
     };
   },

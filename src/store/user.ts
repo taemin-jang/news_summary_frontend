@@ -15,5 +15,11 @@ export const useUserStore = defineStore("user", () => {
   const setUser = (userDTO: UserProfile) => {
     user.value = userDTO;
   };
-  return { user, getUser, setUser };
+  /**
+   * user 정보를 초기화
+   */
+  const deleteUser = () => {
+    user.value = null;
+  };
+  return { user, getUser, setUser, deleteUser };
 });

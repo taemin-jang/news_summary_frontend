@@ -3,7 +3,7 @@ import { AxiosResponse } from "axios";
 import { NaverResponse } from "@/types/NaverSearch";
 import { UserProfile } from "@/types/KakaoLogin";
 import { useUserStore } from "@/store/user";
-
+axios.defaults.withCredentials = true;
 const store = useUserStore();
 
 class AxiosService {
@@ -27,19 +27,22 @@ class AxiosService {
         access_token: accessToken,
       }
     );
-    console.log(response);
     return response;
   }
 
   async getKakaoProfile(): Promise<void> {
     await axios
-      .get("/kakao/info")
+      .get("/kakao/info", { withCredentials: true })
       .then((result) => {
         if (result.status === 200) store.setUser(result.data);
       })
       .catch((error) => {
         console.log(error);
       });
+  }
+
+  async logout() {
+    await axios.get("/kakao/logout", { withCredentials: true });
   }
 
   create(data: any): Promise<any> {
