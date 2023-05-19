@@ -1,8 +1,8 @@
 <template>
   <v-card color="innerBg" :elevation="4" width="70%">
     <v-card-title>경제</v-card-title>
-    <v-row no-gutters v-for="(article, key) in news" :key="key">
-      <v-col>
+    <div no-gutters class="flex">
+      <div class="flex-child" v-for="(article, key) in news" :key="key">
         <v-sheet
           :elevation="2"
           color="newsBg"
@@ -11,28 +11,16 @@
           <v-img
             class="bg-white rounded-xl elevation-4"
             width="100%"
-            :src="article?.images[0]"
-            cover></v-img>
+            :aspect-ratio="16 / 9"
+            :cover="false"
+            :src="article?.images[0]"></v-img>
           <div class="text-subtitle-1 font-weight-bold mt-1">
             {{ article?.title }}
           </div>
           <p class="text-start" v-html="article?.description"></p>
         </v-sheet>
-      </v-col>
-      <v-col>
-        <v-sheet :elevation="2" color="newsBg" class="pa-2 ma-2 rounded-t-xl">
-          <v-img
-            class="bg-white rounded-xl elevation-4"
-            width="100%"
-            :src="article?.images[0]"
-            cover></v-img>
-          <div class="text-subtitle-1 font-weight-bold mt-1">
-            {{ article?.title }}
-          </div>
-          <p class="text-start" v-html="article?.description"></p>
-        </v-sheet>
-      </v-col>
-    </v-row>
+      </div>
+    </div>
   </v-card>
 </template>
 
@@ -55,4 +43,14 @@ onBeforeMount(async () => {
 console.log(news);
 </script>
 
-<style scoped></style>
+<style scoped>
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.flex .flex-child {
+  width: 50%;
+  height: 100%;
+}
+</style>
