@@ -25,8 +25,13 @@ export default defineConfig({
       "/api": {
         target: "http://localhost:3000",
         changeOrigin: true,
+        secure: false,
       },
     },
+  },
+  // build 경로 설정
+  build: {
+    outDir: "../backend/src/public",
   },
   /* remove the need to specify .vue files https://vitejs.dev/config/#resolve-extensions
   resolve: {
