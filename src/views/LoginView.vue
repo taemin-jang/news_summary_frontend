@@ -8,12 +8,13 @@
       v-if="!store.getUser.value"
       >카카오 로그인</v-btn
     >
-    <div v-else>{{ store.getUser.value }}</div>
+    <Portfolio class="pt-10 pl-10 pr-10 mt-8 elevation-4" v-else />
   </v-container>
 </template>
 
 <script setup lang="ts">
 import Header from "@/components/common/HeaderView.vue";
+import Portfolio from "@/views/PortfolioView.vue";
 import { AuthResponse } from "@/types/KakaoLogin";
 import AxiosService from "@/services/AxiosService";
 import { useRouter } from "vue-router";
@@ -39,7 +40,6 @@ const kakaoLogin = async () => {
 
     // 로그인 성공 시 엑세스 토큰 발급
     const accessToken = response.access_token;
-    console.log(accessToken);
     // 서버에 엑세스 토큰 전송후 응답
     const serverResponse = await AxiosService.sendAccessTokenToServer(
       accessToken
