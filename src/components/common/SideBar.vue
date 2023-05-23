@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer>
+  <v-navigation-drawer class="custom" color="sidebarBg" location="right">
     <v-list>
       <v-list-item title="abc" value="abc"></v-list-item>
       <v-list-item title="abc" value="abc"></v-list-item>
@@ -16,4 +16,4 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped></style>
