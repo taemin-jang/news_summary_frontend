@@ -31,6 +31,8 @@ export default createVuetify({
           newsBg: "#cccccc",
           fontColor: "#333333",
           kakaoColor: "#F7E600",
+          plusPriceColor: "#FF3A3A",
+          minusPriceColor: "#1666FF",
           // headerBg: "#ffffff",
           // surface: "#ffffff",
           // sidebarBg: "#ffffff",
