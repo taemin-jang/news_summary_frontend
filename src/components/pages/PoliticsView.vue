@@ -7,13 +7,15 @@
           :elevation="2"
           color="newsBg"
           class="pa-2 ma-2 rounded-t-xl"
-          v-if="article">
+          v-if="article"
+        >
           <v-img
             class="bg-white rounded-xl elevation-4"
             width="100%"
             :aspect-ratio="16 / 9"
             :cover="false"
-            :src="article?.images[0]"></v-img>
+            :src="article?.images[0]"
+          ></v-img>
           <div class="text-subtitle-1 font-weight-bold mt-1">
             {{ article?.title }}
           </div>
