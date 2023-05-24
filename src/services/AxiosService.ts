@@ -45,6 +45,13 @@ class AxiosService {
     await axios.get("/kakao/logout", { withCredentials: true });
   }
 
+  async searchStock(searchItem: string): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axios.get(
+      `/stock?search=${searchItem}`
+    );
+    return response;
+  }
+
   create(data: any): Promise<any> {
     return axios.post("/tutorials", data);
   }
