@@ -3,12 +3,14 @@
     <v-card-title>주식 포트폴리오</v-card-title>
     <v-card-text>
       <v-text-field
+        v-model="searchKeyword"
         density="compact"
         variant="solo"
-        label="Search keyword"
+        label="Search Keyword"
         append-inner-icon="mdi:mdi-magnify"
         single-line
         hide-details
+        @keyup.enter="search"
       ></v-text-field>
     </v-card-text>
     <v-table fixed-header density="compact" class="elevation-4 text-center">
@@ -28,7 +30,10 @@
           <td>{{ item.stockMarket }}</td>
           <td>{{ item.number }}</td>
           <td>{{ item.price }}</td>
-          <td>{{ item.prePrice }}</td>
+          <td :style="plusPriceColor" v-if="+item.prePrice > 0">
+            {{ item.prePrice }}
+          </td>
+          <td :style="minusPriceColor" v-else>{{ item.prePrice }}</td>
           <td><v-icon icon="cancel"></v-icon></td>
         </tr>
       </tbody>
@@ -38,12 +43,18 @@
 
 <script setup lang="ts">
 import { useTheme } from "vuetify";
-import { StyleValue } from "vue";
+import { StyleValue, ref, Ref } from "vue";
+import AxiosService from "@/services/AxiosService";
 
 const theme = useTheme();
-
 const styleObj: StyleValue = {
   borderBottom: `3px solid ${theme.current.value.colors.innerBg} !important`,
+};
+const plusPriceColor: StyleValue = {
+  color: theme.current.value.colors.plusPriceColor,
+};
+const minusPriceColor: StyleValue = {
+  color: theme.current.value.colors.minusPriceColor,
 };
 const desserts = [
   {
@@ -75,6 +86,10 @@ const desserts = [
     prePrice: "-2000",
   },
 ];
+const searchKeyword: Ref<string> = ref("");
+const search = async () => {
+  const response = await AxiosService.searchStock(searchKeyword.value);
+};
 </script>
 
 <style scoped></style>
