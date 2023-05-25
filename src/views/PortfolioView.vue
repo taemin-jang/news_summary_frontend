@@ -12,6 +12,13 @@
         hide-details
         @keyup.enter="search"
       ></v-text-field>
+      {{ selectStock }}
+      <v-autocomplete
+        v-model="selectStock"
+        :items="desserts"
+        item-value="number"
+        item-title="name"
+      ></v-autocomplete>
     </v-card-text>
     <v-table fixed-header density="compact" class="elevation-4 text-center">
       <thead class="table-head">
@@ -86,9 +93,11 @@ const desserts = [
     prePrice: "-2000",
   },
 ];
+var selectStock: Ref<string> = ref("");
 const searchKeyword: Ref<string> = ref("");
 const search = async () => {
   const response = await AxiosService.searchStock(searchKeyword.value);
+  console.log(response.data.item);
 };
 </script>
 
