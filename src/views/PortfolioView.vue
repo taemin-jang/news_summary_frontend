@@ -2,25 +2,16 @@
   <v-card color="innerBg" width="70%" height="100%">
     <v-card-title>주식 포트폴리오</v-card-title>
     <v-card-text>
-      <v-text-field
-        v-model="searchKeyword"
-        density="compact"
-        variant="solo"
-        label="Search Keyword"
-        append-inner-icon="mdi:mdi-magnify"
-        single-line
-        hide-details
-        @keyup.enter="search"
-      ></v-text-field>
       {{ selectStock }}
       <v-autocomplete
         v-model="selectStock"
-        :items="desserts"
-        item-value="number"
-        item-title="name"
+        :items="stockList"
+        item-value="srtnCd"
+        item-title="itmsNm"
+        @update:model-value="search"
       ></v-autocomplete>
     </v-card-text>
-    <v-table fixed-header density="compact" class="elevation-4 text-center">
+    <v-table fixed-header density="comfortable" class="elevation-4 text-center">
       <thead class="table-head">
         <tr>
           <th class="text-center" :style="styleObj">종목</th>
@@ -32,16 +23,21 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in desserts" :key="item.name">
-          <td>{{ item.name }}</td>
-          <td>{{ item.stockMarket }}</td>
-          <td>{{ item.number }}</td>
-          <td>{{ item.price }}</td>
-          <td :style="plusPriceColor" v-if="+item.prePrice > 0">
-            {{ item.prePrice }}
+        <tr v-for="item in [...portfolio.values()]" :key="item.itmsNm">
+          <td>{{ item.itmsNm }}</td>
+          <td>{{ item.mrktCtg }}</td>
+          <td>{{ item.srtnCd }}</td>
+          <td>{{ item.clpr }}</td>
+          <td :style="plusPriceColor" v-if="+item.vs > 0">+{{ item.vs }}</td>
+          <td v-else-if="+item.vs === 0">{{ item.vs }}</td>
+          <td :style="minusPriceColor" v-else>{{ item.vs }}</td>
+          <td>
+            <v-icon
+              icon="cancel"
+              :tag="item.itmsNm"
+              @click="deleteStock"
+            ></v-icon>
           </td>
-          <td :style="minusPriceColor" v-else>{{ item.prePrice }}</td>
-          <td><v-icon icon="cancel"></v-icon></td>
         </tr>
       </tbody>
     </v-table>
@@ -50,8 +46,9 @@
 
 <script setup lang="ts">
 import { useTheme } from "vuetify";
-import { StyleValue, ref, Ref } from "vue";
+import { StyleValue, ref, Ref, onBeforeMount } from "vue";
 import AxiosService from "@/services/AxiosService";
+import { Stock, Portfolio } from "../types/StockList";
 
 const theme = useTheme();
 const styleObj: StyleValue = {
@@ -63,42 +60,61 @@ const plusPriceColor: StyleValue = {
 const minusPriceColor: StyleValue = {
   color: theme.current.value.colors.minusPriceColor,
 };
-const desserts = [
-  {
-    name: "삼성전자",
-    stockMarket: "KOSPI",
-    number: "005930",
-    price: "65300",
-    prePrice: "+200",
-  },
-  {
-    name: "SK하이닉스",
-    stockMarket: "KOSPI",
-    number: "000660",
-    price: "88500",
-    prePrice: "-800",
-  },
-  {
-    name: "에코프로",
-    stockMarket: "KOSDAQ",
-    number: "086520",
-    price: "617000",
-    prePrice: "+6000",
-  },
-  {
-    name: "NAVER",
-    stockMarket: "KONEX",
-    number: "035420",
-    price: "197000",
-    prePrice: "-2000",
-  },
-];
-var selectStock: Ref<string> = ref("");
-const searchKeyword: Ref<string> = ref("");
+
+// 포트폴리오 종목 추가 시 중복 추가 방지하기 위해 Map객체 사용
+const portfolio: Ref<Map<string, Portfolio>> = ref(new Map());
+
+// 현재 선택된 주식의 srtnCd
+let selectStock: Ref<string> = ref("");
+
+// KRX 주식 리스트
+let stockList: Ref<Array<Stock>> = ref([]);
+
+/**
+ * itmsNm으로 주식 정보 검색
+ */
 const search = async () => {
-  const response = await AxiosService.searchStock(searchKeyword.value);
-  console.log(response.data.item);
+  // srtnCd로 itmsNm 추출
+  const keyword = stockList.value.filter(
+    (v) => v.srtnCd === selectStock.value
+  )[0].itmsNm;
+
+  const response = await AxiosService.searchStock(keyword);
+  registStock(response.data.item[0]);
 };
+
+/**
+ * 포트폴리오 등록하는 함수
+ * @param stock 주식 정보
+ */
+const registStock = (stock: Portfolio) => {
+  // 만약 종목이 있으면 1을 반환하므로 0이면 추가
+  if (!portfolio.value.get(stock.itmsNm)) {
+    portfolio.value.set(stock.itmsNm, {
+      itmsNm: stock.itmsNm,
+      mrktCtg: stock.mrktCtg,
+      srtnCd: stock.srtnCd,
+      clpr: stock.clpr,
+      vs: stock.vs,
+    });
+  } else {
+    alert("이미 추가한 주식입니다.");
+  }
+};
+
+/**
+ * 삭제 버튼 클릭 시 포트폴리오에 등록된 해당 주식 삭제
+ * @param event
+ */
+const deleteStock = (event: Event) => {
+  console.log(event);
+  portfolio.value.delete(event.target?.tagName);
+};
+
+onBeforeMount(async () => {
+  const response = await AxiosService.getStockList();
+  stockList.value = response.data;
+});
 </script>
 
 <style scoped></style>
