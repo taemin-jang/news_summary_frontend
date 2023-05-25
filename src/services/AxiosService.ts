@@ -52,6 +52,11 @@ class AxiosService {
     return response;
   }
 
+  async getStockList(): Promise<AxiosResponse> {
+    const response: AxiosResponse = await axios.get("/stock/list");
+    return response;
+  }
+
   create(data: any): Promise<any> {
     return axios.post("/tutorials", data);
   }
