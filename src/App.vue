@@ -6,12 +6,4 @@
   </v-app>
 </template>
 
-<script setup lang="ts">
-import { useUserStore } from "@/store/user";
-import { useRouter } from "vue-router";
-const store = useUserStore();
-const router = useRouter();
-if (store.getUser.value === null) {
-  router.push("/login");
-}
-</script>
+<script setup lang="ts"></script>

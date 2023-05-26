@@ -7,10 +7,6 @@ axios.defaults.withCredentials = true;
 const store = useUserStore();
 
 class AxiosService {
-  getAll(): Promise<any> {
-    return axios.get("/tutorials");
-  }
-
   async getNaver(id: string | number): Promise<NaverResponse[]> {
     const response: AxiosResponse<NaverResponse[]> = await axios.get(
       `/naver/${id}`

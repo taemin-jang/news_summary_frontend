@@ -73,6 +73,9 @@ export default defineComponent({
     ];
     onMounted(async () => {
       await AxiosService.getKakaoProfile();
+      if (profile.value === null) {
+        router.push("/login");
+      }
     });
     return {
       theme,
