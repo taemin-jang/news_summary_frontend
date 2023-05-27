@@ -10,4 +10,14 @@ export interface Portfolio {
   srtnCd: string;
   clpr: string;
   vs: string;
+  basDt?: string;
+  fltRt?: string;
+  hipr?: string;
+  isinCd?: string;
+  lopr?: string;
+  lstgStCnt?: string;
+  mkp?: string;
+  mrktTotAmt?: string;
+  trPrc?: string;
+  trqu?: string;
 }

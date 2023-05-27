@@ -53,6 +53,14 @@ class AxiosService {
     return response;
   }
 
+  async getPortfolio(portfolios: any) {
+    const response: AxiosResponse = await axios.post(
+      "/stock/portfolio",
+      portfolios
+    );
+    return response;
+  }
+
   create(data: any): Promise<any> {
     return axios.post("/tutorials", data);
   }

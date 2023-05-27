@@ -8,6 +8,7 @@
         :items="stockList"
         item-value="srtnCd"
         item-title="itmsNm"
+        label="주식을 검색하세요."
         @update:model-value="search"
       ></v-autocomplete>
     </v-card-text>
@@ -34,7 +35,7 @@
           <td>
             <v-icon
               icon="cancel"
-              :tag="item.itmsNm"
+              :id="item.itmsNm"
               @click="deleteStock"
             ></v-icon>
           </td>
@@ -80,7 +81,7 @@ const search = async () => {
   )[0].itmsNm;
 
   const response = await AxiosService.searchStock(keyword);
-  registStock(response.data.item[0]);
+  registStock(response.data[0]);
 };
 
 /**
@@ -89,7 +90,7 @@ const search = async () => {
  */
 const registStock = (stock: Portfolio) => {
   // 만약 종목이 있으면 1을 반환하므로 0이면 추가
-  if (!portfolio.value.get(stock.itmsNm)) {
+  if (!portfolio.value.get(stock.srtnCd)) {
     portfolio.value.set(stock.itmsNm, {
       itmsNm: stock.itmsNm,
       mrktCtg: stock.mrktCtg,
@@ -107,13 +108,20 @@ const registStock = (stock: Portfolio) => {
  * @param event
  */
 const deleteStock = (event: Event) => {
-  console.log(event);
-  portfolio.value.delete(event.target?.tagName);
+  portfolio.value.delete((event.target as HTMLElement)?.id);
 };
 
 onBeforeMount(async () => {
   const response = await AxiosService.getStockList();
-  stockList.value = response.data;
+  const [stocks, portfolios] = response.data;
+  const portfolioRes = await AxiosService.getPortfolio(portfolios);
+  stockList.value = stocks;
+
+  if (portfolioRes.data.length) {
+    portfolioRes.data.forEach((v: Portfolio) => {
+      portfolio.value.set(v.itmsNm, v);
+    });
+  }
 });
 </script>
 
