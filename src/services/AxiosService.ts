@@ -61,24 +61,8 @@ class AxiosService {
     return response;
   }
 
-  create(data: any): Promise<any> {
-    return axios.post("/tutorials", data);
-  }
-
-  update(id: any, data: any): Promise<any> {
-    return axios.put(`/tutorials/${id}`, data);
-  }
-
-  delete(id: any): Promise<any> {
-    return axios.delete(`/tutorials/${id}`);
-  }
-
-  deleteAll(): Promise<any> {
-    return axios.delete(`/tutorials`);
-  }
-
-  findByTitle(title: string): Promise<any> {
-    return axios.get(`/tutorials?title=${title}`);
+  async deleteStock(deleteItem: string) {
+    await axios.delete(`/stock?delete=${deleteItem}`);
   }
 }
 

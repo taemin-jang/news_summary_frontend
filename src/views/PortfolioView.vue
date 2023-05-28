@@ -90,13 +90,13 @@ const search = async () => {
  */
 const registStock = (stock: Portfolio) => {
   // 만약 종목이 있으면 1을 반환하므로 0이면 추가
-  if (!portfolio.value.get(stock.srtnCd)) {
-    portfolio.value.set(stock.itmsNm, {
-      itmsNm: stock.itmsNm,
-      mrktCtg: stock.mrktCtg,
-      srtnCd: stock.srtnCd,
-      clpr: stock.clpr,
-      vs: stock.vs,
+  if (!portfolio.value.get(stock?.srtnCd)) {
+    portfolio.value.set(stock?.itmsNm, {
+      itmsNm: stock?.itmsNm,
+      mrktCtg: stock?.mrktCtg,
+      srtnCd: stock?.srtnCd,
+      clpr: stock?.clpr,
+      vs: stock?.vs,
     });
   } else {
     alert("이미 추가한 주식입니다.");
@@ -109,6 +109,7 @@ const registStock = (stock: Portfolio) => {
  */
 const deleteStock = (event: Event) => {
   portfolio.value.delete((event.target as HTMLElement)?.id);
+  AxiosService.deleteStock((event.target as HTMLElement)?.id);
 };
 
 onBeforeMount(async () => {
@@ -119,7 +120,7 @@ onBeforeMount(async () => {
 
   if (portfolioRes.data.length) {
     portfolioRes.data.forEach((v: Portfolio) => {
-      portfolio.value.set(v.itmsNm, v);
+      if (v?.itmsNm) portfolio.value.set(v.itmsNm, v);
     });
   }
 });
