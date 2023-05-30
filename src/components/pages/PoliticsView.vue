@@ -15,10 +15,21 @@
             :aspect-ratio="16 / 9"
             :cover="false"
             :src="article?.images[0]"
+            v-if="article?.images !== null"
+          >
+          </v-img>
+          <v-img
+            class="bg-white rounded-xl elevation-4"
+            width="100%"
+            :aspect-ratio="16 / 9"
+            :cover="false"
+            src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
+            v-else
           ></v-img>
-          <div class="text-subtitle-1 font-weight-bold mt-1">
-            {{ article?.title }}
-          </div>
+          <h1
+            class="text-subtitle-1 font-weight-bold mt-1"
+            v-html="article?.title"
+          ></h1>
           <p class="text-start" v-html="article?.description"></p>
         </v-sheet>
       </div>
@@ -38,11 +49,10 @@ const news = reactive(allNews);
 
 // 마운트 되기 전에 데이터를 불러옴
 onBeforeMount(async () => {
-  const response: NaverResponse[] = await AxiosInstance.getNaver("삼성");
+  const response: NaverResponse[] = await AxiosInstance.getNaver("삼성전자");
+  console.log(response);
   allNews.value = response;
 });
-
-console.log(news);
 </script>
 
 <style scoped>
