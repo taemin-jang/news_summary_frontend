@@ -1,14 +1,14 @@
 import axios from "@/plugins/http-common";
 import { AxiosResponse } from "axios";
-import { NaverResponse } from "@/types/NaverSearch";
+import { ReNaverResponse } from "@/types/NaverSearch";
 import { UserProfile } from "@/types/KakaoLogin";
 import { useUserStore } from "@/store/user";
 axios.defaults.withCredentials = true;
 const store = useUserStore();
 
 class AxiosService {
-  async getNaver(id = ""): Promise<NaverResponse[]> {
-    const response: AxiosResponse<NaverResponse[]> = await axios.get(
+  async getNaver(id = ""): Promise<ReNaverResponse[]> {
+    const response: AxiosResponse<ReNaverResponse[]> = await axios.get(
       `/naver/${id}`
     );
     return response.data;
