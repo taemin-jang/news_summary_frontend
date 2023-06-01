@@ -1,8 +1,12 @@
 <template>
   <v-card color="innerBg" :elevation="4" width="70%">
     <v-card-title>경제</v-card-title>
-    <div no-gutters class="flex">
-      <div class="flex-child" v-for="(article, key) in news" :key="key">
+    <div no-gutters class="flex" v-for="(articles, key) in news" :key="key">
+      <div
+        class="flex-child"
+        v-for="(article, id) in articles.list"
+        :key="`${article}-${id}`"
+      >
         <v-sheet
           :elevation="2"
           color="newsBg"
@@ -14,8 +18,8 @@
             width="100%"
             :aspect-ratio="16 / 9"
             :cover="false"
-            :src="article?.images[0]"
-            v-if="article?.images !== null"
+            :src="article[0]?.images[0]"
+            v-if="article[0]?.images !== null"
           >
           </v-img>
           <v-img
@@ -28,9 +32,9 @@
           ></v-img>
           <h1
             class="text-subtitle-1 font-weight-bold mt-1"
-            v-html="article?.title"
+            v-html="article[1]?.title"
           ></h1>
-          <p class="text-start" v-html="article?.description"></p>
+          <p class="text-start" v-html="article[1]?.description"></p>
         </v-sheet>
       </div>
     </div>
@@ -41,7 +45,9 @@
 import AxiosService from "@/services/AxiosService";
 import { NaverResponse } from "@/types/NaverSearch";
 import { reactive, ref, onBeforeMount, Ref } from "vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 let AxiosInstance = AxiosService;
 
 const allNews: Ref<NaverResponse[]> = ref([]);
@@ -49,8 +55,10 @@ const news = reactive(allNews);
 
 // 마운트 되기 전에 데이터를 불러옴
 onBeforeMount(async () => {
-  const response: NaverResponse[] = await AxiosInstance.getNaver("삼성전자");
+  const response = await AxiosInstance.getNaver("삼성전자");
   console.log(response);
+  // if (!response.length) router.push("/mypage");
+
   allNews.value = response;
 });
 </script>
