@@ -22,6 +22,20 @@ import { useUserStore } from "@/store/user";
 
 const router = useRouter();
 const store = useUserStore();
+router.beforeEach(async (to, from, next) => {
+  if (to.name === "politics") {
+    console.log("to", to);
+    console.log("from", from);
+    const response = await AxiosService.getNaver("삼성전자");
+    console.log(response);
+    if (!response.length) next({ name: "mypage" });
+    else next();
+  } else {
+    return false;
+  }
+  // next();
+});
+
 // 카카오 로그인 함수
 const kakaoLogin = async () => {
   if (typeof Kakao === "undefined") {
@@ -41,9 +55,7 @@ const kakaoLogin = async () => {
     // 로그인 성공 시 엑세스 토큰 발급
     const accessToken = response.access_token;
     // 서버에 엑세스 토큰 전송후 응답
-    const serverResponse = await AxiosService.sendAccessTokenToServer(
-      accessToken
-    );
+    const serverResponse = await AxiosService.sendAccessTokenToServer(accessToken);
 
     // 응답에 맞는 처리
     handleResponse(serverResponse);
@@ -56,7 +68,9 @@ const kakaoLogin = async () => {
 const handleResponse = (response: any) => {
   if (response.statusText === "OK") {
     store.setUser(response.data);
-    router.push("/politics");
+    router.push("/politics").catch((err) => {
+      err;
+    });
   }
 };
 </script>
