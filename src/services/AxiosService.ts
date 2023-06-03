@@ -7,9 +7,9 @@ axios.defaults.withCredentials = true;
 const store = useUserStore();
 
 class AxiosService {
-  async getNaver(id = ""): Promise<ReNaverResponse[]> {
+  async getNaver(page = 0): Promise<ReNaverResponse[]> {
     const response: AxiosResponse<ReNaverResponse[]> = await axios.get(
-      `/naver/${id}`
+      `/naver?page=${page}`
     );
     return response.data;
   }
