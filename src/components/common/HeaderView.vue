@@ -4,6 +4,8 @@
     <v-spacer></v-spacer>
     <v-card-text>
       <v-text-field
+        v-model="searchKeyword"
+        @keyup.enter="search"
         density="compact"
         variant="solo"
         label="Search keyword"
@@ -13,11 +15,7 @@
       ></v-text-field>
     </v-card-text>
     <v-spacer></v-spacer>
-    <v-btn
-      icon="dark_mode"
-      @click="toggleTheme"
-      v-if="theme.current.value.dark"
-    ></v-btn>
+    <v-btn icon="dark_mode" @click="toggleTheme" v-if="theme.current.value.dark"></v-btn>
     <v-btn icon="light_mode" @click="toggleTheme" v-else></v-btn>
     <div v-if="!profile">
       <v-btn
@@ -66,9 +64,9 @@ export default defineComponent({
     const theme = useTheme();
     const router = useRouter();
     let profile: Ref<UserProfile | null> = ref(store.getUser);
+    const searchKeyword = ref("");
     const profileMenu = [
       { title: "마이페이지", url: "/mypage" },
-      { title: "포트폴리오", url: "/portfolio" },
       { title: "로그아웃", url: "/logout" },
     ];
     onMounted(async () => {
@@ -81,10 +79,9 @@ export default defineComponent({
       theme,
       profile,
       profileMenu,
+      searchKeyword,
       toggleTheme: () => {
-        theme.global.name.value = theme.global.current.value.dark
-          ? "light"
-          : "dark";
+        theme.global.name.value = theme.global.current.value.dark ? "light" : "dark";
       },
       login: () => {
         router.push("/login");
@@ -97,6 +94,9 @@ export default defineComponent({
           return;
         }
         router.push(`${url}`);
+      },
+      search: async () => {
+        router.push(`?search=${searchKeyword.value}`);
       },
     };
   },

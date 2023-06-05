@@ -1,19 +1,64 @@
 <template>
-  <v-card
-    class="d-flex justify-center"
-    color="innerBg"
-    :elevation="4"
-    width="100%"
-  >
+  <v-card class="d-flex justify-center" color="innerBg" :elevation="4" width="100%">
     <div>
       <v-card-title>뉴스</v-card-title>
       <v-dialog v-model="isModal" width="70%">
         <NewsView :article="article" @closeModal="closeModal" />
       </v-dialog>
-
-      <div class="flex" v-for="(articles, key) in news" :key="key">
+      <div v-if="!route.query.search">
+        <div class="flex" v-for="(articles, key) in news" :key="key">
+          <div
+            v-for="(article, id) in articles.article"
+            :key="`${article.id}-${id}`"
+            class="flex-child h-auto"
+            @click="showModal(article)"
+          >
+            <v-sheet
+              :elevation="2"
+              color="newsBg"
+              class="pa-2 ma-2 rounded-t-xl"
+              v-if="article"
+            >
+              <v-img
+                class="bg-white rounded-xl elevation-4"
+                width="100%"
+                :aspect-ratio="16 / 9"
+                :cover="false"
+                :src="article.images[0]"
+                v-if="article.images[0] !== null"
+              >
+              </v-img>
+              <v-img
+                class="bg-white rounded-xl elevation-4"
+                width="100%"
+                :aspect-ratio="16 / 9"
+                :cover="false"
+                src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
+                v-else
+              ></v-img>
+              <h1 class="text-h5 font-weight-bold mt-1 mb-3" v-html="article.title"></h1>
+              <p
+                class="text-start text-body-1 $card-subtitle-text-overflow mb-2"
+                v-html="article.summary"
+              ></p>
+              <div class="flex justify-center">
+                <v-chip
+                  v-for="(keyword, idx) in article.keywords"
+                  class="ma-1 text-body-2"
+                  :key="idx"
+                  variant="elevated"
+                  size="small"
+                >
+                  {{ keyword }}
+                </v-chip>
+              </div>
+            </v-sheet>
+          </div>
+        </div>
+      </div>
+      <div class="flex" v-else>
         <div
-          v-for="(article, id) in articles.article"
+          v-for="(article, id) in searchNews"
           :key="`${article.id}-${id}`"
           class="flex-child h-auto"
           @click="showModal(article)"
@@ -41,10 +86,7 @@
               src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
               v-else
             ></v-img>
-            <h1
-              class="text-h5 font-weight-bold mt-1 mb-3"
-              v-html="article.title"
-            ></h1>
+            <h1 class="text-h5 font-weight-bold mt-1 mb-3" v-html="article.title"></h1>
             <p
               class="text-start text-body-1 $card-subtitle-text-overflow mb-2"
               v-html="article.summary"
@@ -81,11 +123,12 @@
 import NewsView from "@/components/common/NewsView.vue";
 import AxiosService from "@/services/AxiosService";
 import { ReNaverResponse, NaverResponse } from "@/types/NaverSearch";
-import { reactive, ref, onBeforeMount, Ref, onMounted, onUnmounted } from "vue";
-let AxiosInstance = AxiosService;
+import { ref, Ref, onBeforeMount, onMounted, onUnmounted } from "vue";
+import { useRoute } from "vue-router";
 
-const allNews: Ref<ReNaverResponse[]> = ref([]);
-const news = reactive(allNews);
+const route = useRoute();
+const searchNews: Ref<NaverResponse[]> = ref([]);
+const news: Ref<ReNaverResponse[]> = ref([]);
 const isModal: Ref<boolean> = ref(false);
 const article: Ref<NaverResponse> = ref({
   title: "",
@@ -99,7 +142,7 @@ const article: Ref<NaverResponse> = ref({
   summary: "",
 });
 let page = 0;
-let isLoading: Ref<boolean> = ref(false);
+let isLoading: Ref<boolean> = ref(true);
 
 /**
  * Modal을 보여주는 함수
@@ -124,7 +167,7 @@ const closeModal = () => {
  */
 const load = async () => {
   setTimeout(async () => {
-    const res = await AxiosInstance.getNaver(++page);
+    const res = await AxiosService.getNaver(++page);
     news.value.push(...res);
   }, 500);
 };
@@ -148,9 +191,13 @@ const handleScroll = async () => {
 
 // 마운트 되기 전에 데이터를 불러옴
 onBeforeMount(async () => {
-  const response = await AxiosInstance.getNaver(page);
-  console.log(response);
-  news.value = response.filter((v) => v.article.length);
+  if (route.query.search) {
+    const response = await AxiosService.getSearchArticle(route.query.search?.toString());
+    searchNews.value = response.data[0].article;
+  } else {
+    const response = await AxiosService.getNaver(page);
+    news.value = response.filter((v) => v.article.length);
+  }
 });
 
 onMounted(() => {
