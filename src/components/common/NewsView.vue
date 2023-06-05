@@ -9,7 +9,6 @@
     </div>
     <v-card-subtitle>{{ article.stock_id }} </v-card-subtitle>
     <v-card-subtitle> {{ article.pubDate }}</v-card-subtitle>
-
     <v-img
       :src="article.images[0]"
       alt=""
@@ -17,11 +16,7 @@
       width="50%"
       :cover="true"
     />
-    <v-card-text
-      v-for="(content, i) in contents"
-      :key="i"
-      v-html="content"
-    ></v-card-text>
+    <v-card-text v-for="(content, i) in contents" :key="i" v-html="content"></v-card-text>
   </v-card>
 </template>
 
@@ -32,9 +27,9 @@ const props = defineProps(["article"]);
 const emit = defineEmits(["closeModal"]);
 const contents = props.article.content
   .split("\n")
-  .filter(
-    (v: string) => v !== "\t" && v !== "\t\t" && v !== "\t\t\t" && v !== ""
-  );
+  .filter((v: string) => v !== "\t" && v !== "\t\t" && v !== "\t\t\t" && v !== "")
+  .map((v: string) => v.split(/\s{3}/))
+  .flat();
 
 const close = () => {
   emit("closeModal");
