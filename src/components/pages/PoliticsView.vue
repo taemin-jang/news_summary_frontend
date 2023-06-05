@@ -1,5 +1,10 @@
 <template>
-  <v-card class="d-flex justify-center" color="innerBg" :elevation="4" width="100%">
+  <v-card
+    class="d-flex justify-center"
+    color="innerBg"
+    :elevation="4"
+    width="100%"
+  >
     <div>
       <v-card-title>뉴스</v-card-title>
       <v-dialog v-model="isModal" width="70%">
@@ -36,7 +41,10 @@
                 src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
                 v-else
               ></v-img>
-              <h1 class="text-h5 font-weight-bold mt-1 mb-3" v-html="article.title"></h1>
+              <h1
+                class="text-h5 font-weight-bold mt-1 mb-3"
+                v-html="article.title"
+              ></h1>
               <p
                 class="text-start text-body-1 $card-subtitle-text-overflow mb-2"
                 v-html="article.summary"
@@ -86,7 +94,10 @@
               src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
               v-else
             ></v-img>
-            <h1 class="text-h5 font-weight-bold mt-1 mb-3" v-html="article.title"></h1>
+            <h1
+              class="text-h5 font-weight-bold mt-1 mb-3"
+              v-html="article.title"
+            ></h1>
             <p
               class="text-start text-body-1 $card-subtitle-text-overflow mb-2"
               v-html="article.summary"
@@ -125,6 +136,7 @@ import AxiosService from "@/services/AxiosService";
 import { ReNaverResponse, NaverResponse } from "@/types/NaverSearch";
 import { ref, Ref, onBeforeMount, onMounted, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
+import { useInfiniteScroll } from "@/services/InfiniteScroll";
 
 const route = useRoute();
 const searchNews: Ref<NaverResponse[]> = ref([]);
@@ -142,14 +154,14 @@ const article: Ref<NaverResponse> = ref({
   summary: "",
 });
 let page = 0;
-let isLoading: Ref<boolean> = ref(true);
+let isLoading: Ref<boolean> = ref(false);
 
 /**
  * Modal을 보여주는 함수
  * @param articleObj 기사의 정보가 담겨있음
  */
 const showModal = (articleObj: NaverResponse) => {
-  window.removeEventListener("scroll", handleScroll);
+  isLoading.value = true;
   isModal.value = true;
   article.value = articleObj;
 };
@@ -158,7 +170,7 @@ const showModal = (articleObj: NaverResponse) => {
  * Modal을 닫는 함수
  */
 const closeModal = () => {
-  window.addEventListener("scroll", handleScroll);
+  isLoading.value = false;
   isModal.value = false;
 };
 
@@ -172,40 +184,19 @@ const load = async () => {
   }, 500);
 };
 
-/**
- * scroll 이벤트 발생 시 처리하는 함수
- */
-const handleScroll = async () => {
-  if (isLoading.value) return;
-
-  const windowHeight = document.documentElement.clientHeight;
-  const scrollY = window.scrollY;
-  const documentHeight = document.documentElement.scrollHeight;
-
-  if (windowHeight + scrollY >= documentHeight) {
-    isLoading.value = true;
-    await load();
-    isLoading.value = false;
-  }
-};
+isLoading = useInfiniteScroll(load);
 
 // 마운트 되기 전에 데이터를 불러옴
 onBeforeMount(async () => {
   if (route.query.search) {
-    const response = await AxiosService.getSearchArticle(route.query.search?.toString());
+    const response = await AxiosService.getSearchArticle(
+      route.query.search?.toString()
+    );
     searchNews.value = response.data[0].article;
   } else {
     const response = await AxiosService.getNaver(page);
     news.value = response.filter((v) => v.article.length);
   }
-});
-
-onMounted(() => {
-  window.addEventListener("scroll", handleScroll);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("scroll", handleScroll);
 });
 </script>
 
