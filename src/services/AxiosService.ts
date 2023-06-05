@@ -61,6 +61,11 @@ class AxiosService {
     return response;
   }
 
+  async getSearchArticle(keyword: string) {
+    const response = await axios.get(`/naver/article?search=${keyword}`);
+    return response;
+  }
+
   async deleteStock(deleteItem: string) {
     await axios.delete(`/stock?delete=${deleteItem}`);
   }
