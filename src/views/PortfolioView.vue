@@ -75,13 +75,17 @@ let stockList: Ref<Array<Stock>> = ref([]);
  * itmsNm으로 주식 정보 검색
  */
 const search = async () => {
-  // srtnCd로 itmsNm 추출
-  const keyword = stockList.value.filter(
-    (v) => v.srtnCd === selectStock.value
-  )[0].itmsNm;
+  try {
+    // srtnCd로 itmsNm 추출
+    const keyword = stockList.value.filter(
+      (v) => v.srtnCd === selectStock.value
+    )[0].itmsNm;
 
-  const response = await AxiosService.searchStock(keyword);
-  registStock(response.data[0]);
+    const response = await AxiosService.searchStock(keyword);
+    registStock(response.data[0]);
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 /**

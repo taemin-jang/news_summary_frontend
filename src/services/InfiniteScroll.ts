@@ -16,7 +16,7 @@ export const useInfiniteScroll = (callback: () => void): Ref<boolean> => {
     if (isLoading.value) return;
 
     const windowHeight = document.documentElement.clientHeight;
-    const scrollY = window.scrollY;
+    const scrollY = Math.ceil(window.scrollY);
     const documentHeight = document.documentElement.scrollHeight;
 
     if (windowHeight + scrollY >= documentHeight) {

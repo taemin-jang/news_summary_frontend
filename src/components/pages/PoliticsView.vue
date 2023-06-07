@@ -189,10 +189,14 @@ isLoading = useInfiniteScroll(load);
 // 마운트 되기 전에 데이터를 불러옴
 onBeforeMount(async () => {
   if (route.query.search) {
-    const response = await AxiosService.getSearchArticle(
-      route.query.search?.toString()
-    );
-    searchNews.value = response.data[0].article;
+    try {
+      const response = await AxiosService.getSearchArticle(
+        route.query.search?.toString()
+      );
+      searchNews.value = response.data[0].article;
+    } catch (err) {
+      console.log(err);
+    }
   } else {
     const response = await AxiosService.getNaver(page);
     news.value = response.filter((v) => v.article.length);
