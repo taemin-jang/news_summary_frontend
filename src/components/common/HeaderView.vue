@@ -102,7 +102,7 @@ export default defineComponent({
         router.push(`${url}`);
       },
       search: async () => {
-        router.push(`?search=${searchKeyword.value}`);
+        router.push(`/politics?search=${searchKeyword.value}`);
       },
     };
   },
