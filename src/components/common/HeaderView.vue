@@ -1,6 +1,6 @@
 <template>
   <v-app-bar color="headerBg">
-    <v-btn @click="movePage('/politics')">News summary</v-btn>
+    <v-btn @click="movePage('/politics')">Econo Automat</v-btn>
     <v-spacer></v-spacer>
     <v-card-text>
       <v-text-field
@@ -15,7 +15,11 @@
       ></v-text-field>
     </v-card-text>
     <v-spacer></v-spacer>
-    <v-btn icon="dark_mode" @click="toggleTheme" v-if="theme.current.value.dark"></v-btn>
+    <v-btn
+      icon="dark_mode"
+      @click="toggleTheme"
+      v-if="theme.current.value.dark"
+    ></v-btn>
     <v-btn icon="light_mode" @click="toggleTheme" v-else></v-btn>
     <div v-if="!profile">
       <v-btn
@@ -81,7 +85,9 @@ export default defineComponent({
       profileMenu,
       searchKeyword,
       toggleTheme: () => {
-        theme.global.name.value = theme.global.current.value.dark ? "light" : "dark";
+        theme.global.name.value = theme.global.current.value.dark
+          ? "light"
+          : "dark";
       },
       login: () => {
         router.push("/login");
