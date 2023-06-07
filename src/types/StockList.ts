@@ -21,3 +21,17 @@ export interface Portfolio {
   trPrc?: string;
   trqu?: string;
 }
+
+export interface ExPortfolio extends Portfolio {
+  datas: Portfolio[];
+}
+
+export interface ChartDate {
+  clpr: string;
+  date: string;
+}
+
+export interface PortfolioChartData {
+  itmsNm: string;
+  list: ChartDate[];
+}

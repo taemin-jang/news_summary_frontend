@@ -2,9 +2,8 @@ import axios from "@/plugins/http-common";
 import { AxiosResponse } from "axios";
 import { ReNaverResponse } from "@/types/NaverSearch";
 import { UserProfile } from "@/types/KakaoLogin";
-import { useUserStore } from "@/store/user";
+import { store } from "@/store";
 axios.defaults.withCredentials = true;
-const store = useUserStore();
 
 class AxiosService {
   async getNaver(page = 0): Promise<ReNaverResponse[]> {
@@ -30,7 +29,7 @@ class AxiosService {
     await axios
       .get("/kakao/info", { withCredentials: true })
       .then((result) => {
-        if (result.status === 200) store.setUser(result.data);
+        if (result.status === 200) store.userStore.setUser(result.data);
       })
       .catch((error) => {
         console.log(error);
@@ -58,6 +57,7 @@ class AxiosService {
       "/stock/portfolio",
       portfolios
     );
+    store.portfolioStore.setPortfolio(response.data);
     return response;
   }
 
