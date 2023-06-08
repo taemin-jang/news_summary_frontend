@@ -33,11 +33,7 @@
           <td v-else-if="+item.vs === 0">{{ item.vs }}</td>
           <td :style="minusPriceColor" v-else>{{ item.vs }}</td>
           <td>
-            <v-icon
-              icon="cancel"
-              :id="item.itmsNm"
-              @click="deleteStock"
-            ></v-icon>
+            <v-icon icon="cancel" :id="item.itmsNm" @click="deleteStock"></v-icon>
           </td>
         </tr>
       </tbody>
@@ -77,9 +73,8 @@ let stockList: Ref<Array<Stock>> = ref([]);
 const search = async () => {
   try {
     // srtnCd로 itmsNm 추출
-    const keyword = stockList.value.filter(
-      (v) => v.srtnCd === selectStock.value
-    )[0].itmsNm;
+    const keyword = stockList.value.filter((v) => v.srtnCd === selectStock.value)[0]
+      .itmsNm;
 
     const response = await AxiosService.searchStock(keyword);
     registStock(response.data[0]);
@@ -102,6 +97,7 @@ const registStock = (stock: Portfolio) => {
       clpr: stock?.clpr,
       vs: stock?.vs,
     });
+    console.log(portfolio.value);
   } else {
     alert("이미 추가한 주식입니다.");
   }
@@ -119,9 +115,9 @@ const deleteStock = (event: Event) => {
 onBeforeMount(async () => {
   const response = await AxiosService.getStockList();
   const [stocks, portfolios] = response.data;
-  const portfolioRes = await AxiosService.getPortfolio(portfolios);
   stockList.value = stocks;
-
+  const portfolioRes = await AxiosService.getPortfolio(portfolios);
+  console.log(stockList.value);
   if (portfolioRes.data.length) {
     portfolioRes.data.forEach((v: Portfolio) => {
       if (v?.itmsNm) portfolio.value.set(v.itmsNm, v);

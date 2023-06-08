@@ -1,10 +1,5 @@
 <template>
-  <v-card
-    class="d-flex justify-center"
-    color="innerBg"
-    :elevation="4"
-    width="100%"
-  >
+  <v-card class="d-flex justify-center" color="innerBg" :elevation="4" width="100%">
     <div>
       <v-card-title>뉴스</v-card-title>
       <v-dialog v-model="isModal" width="70%">
@@ -41,10 +36,7 @@
                 src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
                 v-else
               ></v-img>
-              <h1
-                class="text-h5 font-weight-bold mt-1 mb-3"
-                v-html="article.title"
-              ></h1>
+              <h1 class="text-h5 font-weight-bold mt-1 mb-3" v-html="article.title"></h1>
               <p
                 class="text-start text-body-1 $card-subtitle-text-overflow mb-2"
                 v-html="article.summary"
@@ -94,10 +86,7 @@
               src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
               v-else
             ></v-img>
-            <h1
-              class="text-h5 font-weight-bold mt-1 mb-3"
-              v-html="article.title"
-            ></h1>
+            <h1 class="text-h5 font-weight-bold mt-1 mb-3" v-html="article.title"></h1>
             <p
               class="text-start text-body-1 $card-subtitle-text-overflow mb-2"
               v-html="article.summary"
@@ -135,10 +124,11 @@ import NewsView from "@/components/common/NewsView.vue";
 import AxiosService from "@/services/AxiosService";
 import { ReNaverResponse, NaverResponse } from "@/types/NaverSearch";
 import { ref, Ref, onBeforeMount, onMounted, onUnmounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useInfiniteScroll } from "@/services/InfiniteScroll";
 
 const route = useRoute();
+const router = useRouter();
 const searchNews: Ref<NaverResponse[]> = ref([]);
 const news: Ref<ReNaverResponse[]> = ref([]);
 const isModal: Ref<boolean> = ref(false);
@@ -181,6 +171,7 @@ const load = async () => {
   setTimeout(async () => {
     const res = await AxiosService.getNaver(++page);
     news.value.push(...res);
+    console.log(res);
   }, 500);
 };
 

@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import AxiosService from "@/services/AxiosService";
-
+import localStorage from "@/plugins/localStorage";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -12,7 +11,12 @@ const routes: Array<RouteRecordRaw> = [
         name: "politics",
         component: () => import("@/components/pages/PoliticsView.vue"),
         props: { test: "tests" },
-        //todo props객체로 넘겨줘서 로그인 페이지에서 getnaver 호출 후 값을 넘겨줄 수 잇는지?
+        beforeEnter: async (to, from) => {
+          if (!localStorage.getLocalStoage("portfolio").length) {
+            alert("포트폴리오를 등록해주세요.");
+            return false;
+          }
+        },
       },
     ],
   },

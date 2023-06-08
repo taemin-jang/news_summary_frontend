@@ -3,6 +3,7 @@ import { AxiosResponse } from "axios";
 import { ReNaverResponse } from "@/types/NaverSearch";
 import { UserProfile } from "@/types/KakaoLogin";
 import { store } from "@/store";
+import localStorage from "@/plugins/localStorage";
 axios.defaults.withCredentials = true;
 
 class AxiosService {
@@ -58,6 +59,8 @@ class AxiosService {
       portfolios
     );
     store.portfolioStore.setPortfolio(response.data);
+    const itmsNmArr = response.data.map((v: any) => v.itmsNm);
+    localStorage.setLocalStoage("portfolio", JSON.stringify(itmsNmArr));
     return response;
   }
 
