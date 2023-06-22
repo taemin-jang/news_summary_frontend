@@ -15,11 +15,7 @@
       ></v-text-field>
     </v-card-text>
     <v-spacer></v-spacer>
-    <v-btn
-      icon="dark_mode"
-      @click="toggleTheme"
-      v-if="theme.current.value.dark"
-    ></v-btn>
+    <v-btn icon="dark_mode" @click="toggleTheme" v-if="theme.current.value.dark"></v-btn>
     <v-btn icon="light_mode" @click="toggleTheme" v-else></v-btn>
     <div v-if="!profile">
       <v-btn
@@ -59,6 +55,7 @@ import { useRouter } from "vue-router";
 import { useUserStore } from "@/store/user";
 import { UserProfile } from "@/types/KakaoLogin";
 import AxiosService from "@/services/AxiosService";
+import { kakaoLogin } from "@/plugins/oauthKakao";
 
 const store = useUserStore();
 
@@ -73,33 +70,34 @@ export default defineComponent({
       { title: "마이페이지", url: "/mypage" },
       { title: "로그아웃", url: "/logout" },
     ];
-    onMounted(async () => {
-      await AxiosService.getKakaoProfile();
-      if (profile.value === null) {
-        router.push("/login");
-      }
-    });
     return {
       theme,
       profile,
       profileMenu,
       searchKeyword,
       toggleTheme: () => {
-        theme.global.name.value = theme.global.current.value.dark
-          ? "light"
-          : "dark";
+        theme.global.name.value = theme.global.current.value.dark ? "light" : "dark";
       },
-      login: () => {
-        router.push("/login");
+      login: async () => {
+        // router.push("/login");
+        await kakaoLogin().then((result) => {
+          if (result?.statusText === "OK") {
+            store.setUser(result.data);
+            router.push("/politics");
+          }
+        });
       },
       movePage: async (url: string) => {
         if (url === "/logout") {
           AxiosService.logout();
           store.deleteUser();
-          router.push("/login");
+          router.push("/");
           return;
+        } else if (url === "/politics" && store.getUser.value) {
+          router.push(url);
+        } else {
+          router.push(url);
         }
-        router.push(`${url}`);
       },
       search: async () => {
         router.push(`/politics?search=${searchKeyword.value}`);

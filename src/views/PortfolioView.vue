@@ -1,47 +1,56 @@
 <template>
-  <v-card color="innerBg" width="70%" height="100%">
-    <v-card-title>주식 포트폴리오</v-card-title>
-    <v-card-text>
-      {{ selectStock }}
-      <v-autocomplete
-        v-model="selectStock"
-        :items="stockList"
-        item-value="srtnCd"
-        item-title="itmsNm"
-        label="주식을 검색하세요."
-        @update:model-value="search"
-      ></v-autocomplete>
-    </v-card-text>
-    <v-table fixed-header density="comfortable" class="elevation-4 text-center">
-      <thead class="table-head">
-        <tr>
-          <th class="text-center" :style="styleObj">종목</th>
-          <th class="text-center" :style="styleObj">주식 시장</th>
-          <th class="text-center" :style="styleObj">번호</th>
-          <th class="text-center" :style="styleObj">현재 가격</th>
-          <th class="text-center" :style="styleObj">전일 대비 등락</th>
-          <th class="text-center" :style="styleObj"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in [...portfolio.values()]" :key="item.itmsNm">
-          <td>{{ item.itmsNm }}</td>
-          <td>{{ item.mrktCtg }}</td>
-          <td>{{ item.srtnCd }}</td>
-          <td>{{ item.clpr }}</td>
-          <td :style="plusPriceColor" v-if="+item.vs > 0">+{{ item.vs }}</td>
-          <td v-else-if="+item.vs === 0">{{ item.vs }}</td>
-          <td :style="minusPriceColor" v-else>{{ item.vs }}</td>
-          <td>
-            <v-icon icon="cancel" :id="item.itmsNm" @click="deleteStock"></v-icon>
-          </td>
-        </tr>
-      </tbody>
-    </v-table>
-  </v-card>
+  <Header></Header>
+  <v-container class="d-flex justify-center align-center h-100">
+    <v-card
+      class="pt-10 pl-10 pr-10 mt-8 elevation-4"
+      color="innerBg"
+      width="70%"
+      height="100%"
+    >
+      <v-card-title>주식 포트폴리오</v-card-title>
+      <v-card-text>
+        {{ selectStock }}
+        <v-autocomplete
+          v-model="selectStock"
+          :items="stockList"
+          item-value="srtnCd"
+          item-title="itmsNm"
+          label="주식을 검색하세요."
+          @update:model-value="search"
+        ></v-autocomplete>
+      </v-card-text>
+      <v-table fixed-header density="comfortable" class="elevation-4 text-center">
+        <thead class="table-head">
+          <tr>
+            <th class="text-center" :style="styleObj">종목</th>
+            <th class="text-center" :style="styleObj">주식 시장</th>
+            <th class="text-center" :style="styleObj">번호</th>
+            <th class="text-center" :style="styleObj">현재 가격</th>
+            <th class="text-center" :style="styleObj">전일 대비 등락</th>
+            <th class="text-center" :style="styleObj"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in [...portfolio.values()]" :key="item.itmsNm">
+            <td>{{ item.itmsNm }}</td>
+            <td>{{ item.mrktCtg }}</td>
+            <td>{{ item.srtnCd }}</td>
+            <td>{{ item.clpr }}</td>
+            <td :style="plusPriceColor" v-if="+item.vs > 0">+{{ item.vs }}</td>
+            <td v-else-if="+item.vs === 0">{{ item.vs }}</td>
+            <td :style="minusPriceColor" v-else>{{ item.vs }}</td>
+            <td>
+              <v-icon icon="cancel" :id="item.itmsNm" @click="deleteStock"></v-icon>
+            </td>
+          </tr>
+        </tbody>
+      </v-table>
+    </v-card>
+  </v-container>
 </template>
 
 <script setup lang="ts">
+import Header from "@/components/common/HeaderView.vue";
 import { useTheme } from "vuetify";
 import { StyleValue, ref, Ref, onBeforeMount } from "vue";
 import AxiosService from "@/services/AxiosService";
